@@ -2,16 +2,22 @@
 <html>
 <head>
 	<title>jqSuperKeno</title>
+	<meta charset="UTF-8">
 	
-	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-	<script src="http://code.createjs.com/soundjs-0.4.1.min.js"></script>
-
-	<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/dot-luv/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.10.3/themes/dot-luv/jquery-ui.css" />
 
 	<style>
+		body{
+			text-align: center;
+		}
+	
 		.ui-widget {
 			font-size: 12px;
+		}
+
+		.board {
+			margin-left: auto;
+			margin-right: auto;
 		}
 
 		.board td {
@@ -48,8 +54,36 @@
 			height: 2em;
 		}
 				
-
 	</style>
+	
+</head>
+<body>
+
+
+	<br/>
+	<table id="board-upper" class="board"></table>
+	<br/>
+	<table id="board-lower" class="board"></table>
+	<div id="output"></div>
+	<button id="btnPlay" autocomplete="off" class="game-playerinput">Play!</button>
+	<button id="btnClear" autocomplete="off" class="game-playerinput">Clear</button>
+	<button id="btnQuick" autocomplete="off" class="game-playerinput">Pick 10</button>
+
+	<br/><input type="checkbox" id="chkFastMode" autocomplete="off" class="game-playerinput">Fast Mode
+	<br/>Credit: <input type="text" id="txtCredit" value="20.00" disabled="disabled" autocomplete="off" class="ui-widget ui-widget-content ui-corner-all">
+	<br/>Bet: <input type="text" id="txtBet" autocomplete="off" class="game-playerinput">
+
+
+
+	<br/><br/>
+	<textarea id="log" cols="80" rows="8"></textarea>
+	
+	
+	<!-- JavaScript -->
+	
+	<script src="https://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	<script src="https://code.createjs.com/soundjs-0.4.1.min.js"></script>
 	
 	<script>
 	var PAYTABLE = 
@@ -77,8 +111,11 @@
 
 		// Setup audio 
 		createjs.Sound.initializeDefaultPlugins();
-		createjs.Sound.registerSound("assets/drop1.mp3", "drop1", 10);
-		createjs.Sound.registerSound("assets/drop2.mp3", "drop2", 10);
+		createjs.Sound.registerSound("assets/tone1.ogg", "nomatch", 10);
+		createjs.Sound.registerSound("assets/zap1.ogg", "match", 10);
+		createjs.Sound.registerSound("assets/twoTone1.ogg", "lose", 10);
+		createjs.Sound.registerSound("assets/zapThreeToneUp.ogg", "win", 10);
+		createjs.Sound.registerSound("assets/threeTone2.ogg", "superwin", 10);
 
 		// Setup inputs
 		$("#txtBet").spinner({
@@ -198,9 +235,9 @@
 		if(!$("#chkFastMode").is(':checked'))
 		{
 			if(pick.hasClass('game-picked'))
-				createjs.Sound.play("drop2");
+				createjs.Sound.play("match");
 			else
-				createjs.Sound.play("drop1");
+				createjs.Sound.play("nomatch");
 		}
 	}
 
@@ -247,6 +284,15 @@
 		if(superballed)
 			paymult = paymult * BONUS_MULT;
 		
+		
+		//Play sound effect
+		if(superballed && paymult > 0) 
+			createjs.Sound.play("superwin");
+		else if(paymult > 0)
+			createjs.Sound.play("win");
+		else	
+			createjs.Sound.play("lose");
+		
 		// Display results of game
 		$("#output").text("You hit " + hit + " out of " + picked + " - Payout: x" + paymult);
 		
@@ -267,26 +313,7 @@
 		currentState = GAMESTATES.READY;
 	}
 	</script>
-</head>
-<body>
-
-	<br/>
-	<table id="board-upper" class="board"></table>
-	<br/>
-	<table id="board-lower" class="board"></table>
-	<div id="output"></div>
-	<button id="btnPlay" autocomplete="off" class="game-playerinput">Play!</button>
-	<button id="btnClear" autocomplete="off" class="game-playerinput">Clear</button>
-	<button id="btnQuick" autocomplete="off" class="game-playerinput">Pick 10</button>
-
-	<br/><input type="checkbox" id="chkFastMode" autocomplete="off" class="game-playerinput">Fast Mode
-	<br/>Credit: <input type="text" id="txtCredit" value="20.00" disabled="disabled" autocomplete="off" class="ui-widget ui-widget-content ui-corner-all">
-	<br/>Bet: <input type="text" id="txtBet" autocomplete="off" class="game-playerinput">
-
-
-
-	<br/><br/>
-	<textarea id="log" cols="80" rows="8"></textarea>
+	
 	
 </body>
 </html>
