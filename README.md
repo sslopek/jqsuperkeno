@@ -2,7 +2,7 @@ jqSuperKeno
 -----------
 jqSuperKeno is a video keno game written in JavaScript utilizing jQuery. The project was started on 2013-07-11 by Steven Slopek.
 
-Pay table based on http://wizardofodds.com/games/keno/
+Demo published on Github Pages: https://sslopek.github.io/jqsuperkeno/
 
 
 
@@ -18,6 +18,9 @@ Future Changes
 Credits
 -------
 Sound effects by Kenney www.kenney.nl (licensed CC0)
+
+Pay table based on http://wizardofodds.com/games/keno/
+
 
 
 License
