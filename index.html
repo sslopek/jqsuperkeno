@@ -138,7 +138,7 @@
 			{
 				for(var i=0; i<10; i++)
 				{
-					pickUnqiue("game-picked");
+					pickUnique("game-picked");
 				}
 			}
 		});
@@ -207,7 +207,7 @@
 	}
 
 	// Pick a random cell that does not have 'elemClass' set and add it.
-	function pickUnqiue(elemClass)
+	function pickUnique(elemClass)
 	{
 		var n = Math.floor(Math.random()*80);
 			
@@ -216,7 +216,7 @@
 		// Check for duplicates - call recursively until unique
 		if(pick.hasClass(elemClass))
 		{
-			return pickUnqiue(elemClass);
+			return pickUnique(elemClass);
 		}
 		
 		return pick.addClass(elemClass);
@@ -226,7 +226,7 @@
 	// Used to pick each number and then do related actions
 	function gameLoop(superball)
 	{
-		var pick = pickUnqiue("game-drawn")
+		var pick = pickUnique("game-drawn")
 		
 		if(superball)
 			pick.addClass("game-super");
