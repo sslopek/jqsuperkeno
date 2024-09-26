@@ -1,4 +1,6 @@
-var PAYTABLE =
+"use strict";
+
+const PAY_TABLE =
 	[[1],
 	[0, 3],
 	[0, 0, 12],
@@ -11,13 +13,18 @@ var PAYTABLE =
 	[0, 0, 0, 0, 0, 3, 30, 400, 4000, 40000],
 	[0, 0, 0, 0, 0, 1, 10, 100, 1000, 5000, 1000000]];
 
-var GAMESTATES = { READY: 1, DRAWING: 2 };
-var NUMBERS_TO_PICK = 20;
-var BONUS_MULT = 4;
+const GAME_STATES = { READY: 1, DRAWING: 2 };
+const NUMBERS_TO_DRAW = 20;
+const BONUS_MULTIPLIER = 4;
+const DEFAULT_DRAWING_DELAY_MS = 200;
+const MAX_SPOTS = 10;
 
-var currentState = GAMESTATES.READY;
-var currentSpeed = 200;
-var currentCredit = 20.0;
+const BOARD_ROWS = 8;
+const BOARD_COLUMNS = 10;
+
+let currentState = GAME_STATES.READY;
+let currentSpeed = DEFAULT_DRAWING_DELAY_MS;
+let currentCredit = 20.0;
 
 $(function () {
 
@@ -38,16 +45,16 @@ $(function () {
 
 	$("#chkFastMode").click(function () {
 		if ($("#chkFastMode").is(':checked'))
-			currentSpeed = 20;
+			currentSpeed = DEFAULT_DRAWING_DELAY_MS / 10;
 		else
-			currentSpeed = 200;
+			currentSpeed = DEFAULT_DRAWING_DELAY_MS;
 	});
 
 	$("#btnClear").button().click(clearBoard);
 
 	$("#btnQuick").button().click(function () {
 		if (clearBoard()) {
-			for (var i = 0; i < 10; i++) {
+			for (let i = 0; i < MAX_SPOTS; i++) {
 				pickUnique("game-picked");
 			}
 		}
@@ -57,19 +64,20 @@ $(function () {
 
 
 	// Generate game board
-	for (var i = 0; i <= 7; i++) {
-		var currow = $("<tr/>");
+	for (let row = 1; row <= BOARD_ROWS; row++) {
+		const currentRowElement = $("<tr/>");
 
-		for (var j = 1; j <= 10; j++) {
-			var cellid = i * 10 + j;
-			var curcell = $("<td/>", { class: "game-cell", text: cellid });
-			currow.append(curcell);
+		for (let col = 1; col <= BOARD_COLUMNS; col++) {
+			const cellNumber = ((row - 1) * BOARD_COLUMNS) + col;
+			const currentCellElement = $("<td/>", { class: "game-cell", text: cellNumber });
+			currentRowElement.append(currentCellElement);
 		}
 
-		if (i <= 3)
-			$("#board-upper").append(currow);
+		// Split board in half
+		if (row <= BOARD_ROWS / 2)
+			$("#board-upper").append(currentRowElement);
 		else
-			$("#board-lower").append(currow);
+			$("#board-lower").append(currentRowElement);
 	}
 
 	$(".board").addClass("ui-widget ui-widget-content");
@@ -78,31 +86,30 @@ $(function () {
 	// Hover and clicking on game cells
 	$(".game-cell").hover(
 		function () {
-			if (currentState !== GAMESTATES.READY)
+			if (currentState !== GAME_STATES.READY)
 				return;
 			$(this).addClass("ui-state-hover");
 		},
 		function () {
-			if (currentState !== GAMESTATES.READY)
+			if (currentState !== GAME_STATES.READY)
 				return;
 			$(this).removeClass("ui-state-hover");
 		}
 	).click(function () {
-		if (currentState !== GAMESTATES.READY)
+		if (currentState !== GAME_STATES.READY)
 			return;
 
 		// Add up to 10 selections
-		if ($('.game-picked').length < 10 || $(this).hasClass('game-picked'))
+		if ($('.game-picked').length < MAX_SPOTS || $(this).hasClass('game-picked'))
 			$(this).toggleClass('game-picked');
 	});
 
 });
 
 
-
 // Clear all special classes on cells
 function clearBoard() {
-	if (currentState === GAMESTATES.READY) {
+	if (currentState === GAME_STATES.READY) {
 		$(".game-cell").removeClass("game-drawn game-super game-picked");
 		return true;
 	}
@@ -111,31 +118,31 @@ function clearBoard() {
 	}
 }
 
+
 // Pick a random cell that does not have 'elemClass' set and add it.
 function pickUnique(elemClass) {
-	var n = Math.floor(Math.random() * 80);
-
-	var pick = $(".game-cell").eq(n);
+	const randomNumber = Math.floor(Math.random() * (BOARD_ROWS * BOARD_COLUMNS));
+	const pickedCellElement = $(".game-cell").eq(randomNumber);
 
 	// Check for duplicates - call recursively until unique
-	if (pick.hasClass(elemClass)) {
+	if (pickedCellElement.hasClass(elemClass)) {
 		return pickUnique(elemClass);
 	}
 
-	return pick.addClass(elemClass);
+	return pickedCellElement.addClass(elemClass);
 }
 
 
 // Used to pick each number and then do related actions
-function gameLoop(superball) {
-	var pick = pickUnique("game-drawn")
+function gameLoop(isSuperball) {
+	const pickedCellElement = pickUnique("game-drawn")
 
-	if (superball)
-		pick.addClass("game-super");
+	if (isSuperball)
+		pickedCellElement.addClass("game-super");
 
 	// Skip sound in fast mode
 	if (!$("#chkFastMode").is(':checked')) {
-		if (pick.hasClass('game-picked'))
+		if (pickedCellElement.hasClass('game-picked'))
 			createjs.Sound.play("match");
 		else
 			createjs.Sound.play("nomatch");
@@ -146,7 +153,7 @@ function gameLoop(superball) {
 // Start a new drawing
 function startGame() {
 	// Set up game
-	currentState = GAMESTATES.DRAWING;
+	currentState = GAME_STATES.DRAWING;
 	$(".game-drawn").removeClass("game-drawn game-super");
 
 	// Disable user input
@@ -159,54 +166,54 @@ function startGame() {
 	$("#txtCredit").val(currentCredit.toFixed(2));
 
 	// Draw numbers
-	for (var i = 0; i < NUMBERS_TO_PICK; i++) {
-		if (i < NUMBERS_TO_PICK - 1)
+	for (let i = 0; i < NUMBERS_TO_DRAW; i++) {
+		if (i < NUMBERS_TO_DRAW - 1)
 			setTimeout("gameLoop(false)", currentSpeed * i);
 		else
 			setTimeout("gameLoop(true)", currentSpeed * i); //Superball on last draw
 	}
 
 	// Finish game after numbers have been picked.
-	setTimeout(endGame, currentSpeed * NUMBERS_TO_PICK);
+	setTimeout(endGame, currentSpeed * NUMBERS_TO_DRAW);
 }
 
 
 // Called after all 20 numbers are drawn.
 function endGame() {
 	// Get results from pay table
-	var picked = $(".game-picked").length;
-	var hit = $(".game-picked.game-drawn").length;
-	var superballed = $(".game-picked.game-super").length > 0;
-	var paymult = PAYTABLE[picked][hit];
+	const pickedCount = $(".game-picked").length;
+	const hitCount = $(".game-picked.game-drawn").length;
+	const hasSuperball = $(".game-picked.game-super").length > 0;
+	let payoutMultiplier = PAY_TABLE[pickedCount][hitCount];
 
-	if (superballed)
-		paymult = paymult * BONUS_MULT;
-
+	if (hasSuperball)
+		payoutMultiplier = payoutMultiplier * BONUS_MULTIPLIER;
 
 	//Play sound effect
-	if (superballed && paymult > 0)
+	if (hasSuperball && payoutMultiplier > 0)
 		createjs.Sound.play("superwin");
-	else if (paymult > 0)
+	else if (payoutMultiplier > 0)
 		createjs.Sound.play("win");
 	else
 		createjs.Sound.play("lose");
 
 	// Display results of game
-	$("#output").text("You hit " + hit + " out of " + picked + " - Payout: x" + paymult);
+	$("#output").text("You hit " + hitCount + " out of " + pickedCount + " - Payout: x" + payoutMultiplier);
 
-	if (superballed)
+	if (hasSuperball)
 		$("#output").append(" SUPERBALL!");
 
 	// Log message
 	$("#log").prepend($("#output").text() + "\n");
 
 	// Add winnings to credit
-	currentCredit += parseFloat($("#txtBet").val()) * paymult;
+	const winnings = parseFloat($("#txtBet").val()) * payoutMultiplier
+	currentCredit += winnings;
 	$("#txtCredit").val(currentCredit.toFixed(2));
 
 	// Re-enable user input
 	$(".game-playerinput").removeAttr("disabled").removeClass("ui-state-disabled");
 	$("#txtBet").spinner({ disabled: false });
 
-	currentState = GAMESTATES.READY;
+	currentState = GAME_STATES.READY;
 }
