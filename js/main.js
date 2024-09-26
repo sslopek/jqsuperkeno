@@ -198,9 +198,9 @@ function endGame() {
 		createjs.Sound.play("lose");
 
 	// Display results of game
-	$("#output").text("You hit " + hitCount + " out of " + pickedCount + " - Payout: x" + payoutMultiplier);
+	$("#output").text("You hit " + hitCount + " out of " + pickedCount + " - Payout × " + payoutMultiplier);
 
-	if (hasSuperball)
+	if (hasSuperball && payoutMultiplier > 0)
 		$("#output").append(" SUPERBALL!");
 
 	// Log message
