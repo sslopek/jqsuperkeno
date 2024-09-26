@@ -27,8 +27,10 @@ let currentState = GAME_STATES.READY;
 let currentSpeed = DEFAULT_DRAWING_DELAY_MS;
 let currentCredit = DEFAULT_CREDIT;
 
-$(function () {
-
+/**
+ * Setup game on page ready.
+ */
+function initGame() {
 	// Setup audio
 	createjs.Sound.initializeDefaultPlugins();
 	createjs.Sound.registerSound("assets/tone1.ogg", "nomatch", 10);
@@ -38,24 +40,18 @@ $(function () {
 	createjs.Sound.registerSound("assets/threeTone2.ogg", "superwin", 10);
 
 	// Setup inputs
-	$("#txtBet").spinner({
-		min: .25,
-		max: 100,
-		step: .25,
-	}).val(".25");
+	document.getElementById("inputBet").value = .25;
+	document.getElementById("gameLog").value = "";
 
-	$("#log").val("");
-
-	$("#chkFastMode").click(function () {
-		if ($("#chkFastMode").is(':checked'))
+	document.getElementById("chkFastMode").addEventListener("click", () => {
+		if (document.getElementById("chkFastMode").checked)
 			currentSpeed = DEFAULT_DRAWING_DELAY_MS / 10;
 		else
 			currentSpeed = DEFAULT_DRAWING_DELAY_MS;
 	});
-
-	$("#btnClear").button().click(function () {clearBoard(true);});
-
-	$("#btnQuick").button().click(function () {
+	document.getElementById("btnPlay").addEventListener("click", startGame);
+	document.getElementById("btnClear").addEventListener("click", () => { clearBoard(true); });
+	document.getElementById("btnQuick").addEventListener("click", () => {
 		if (clearBoard(true)) {
 			for (let i = 0; i < MAX_SPOTS; i++) {
 				pickUnique("game-picked");
@@ -63,65 +59,69 @@ $(function () {
 		}
 	});
 
-	$("#btnPlay").button().click(startGame);
-
-
 	// Generate game board
 	for (let row = 1; row <= BOARD_ROWS; row++) {
-		const currentRowElement = $("<tr/>");
+		const currentRowElement = document.createElement("tr");
 
 		for (let col = 1; col <= BOARD_COLUMNS; col++) {
 			const cellNumber = ((row - 1) * BOARD_COLUMNS) + col;
-			const currentCellElement = $("<td/>", { class: "game-cell", text: cellNumber });
-			currentRowElement.append(currentCellElement);
+			const currentCellElement = document.createElement("td");
+			currentCellElement.textContent = cellNumber;
+			currentCellElement.classList.add("game-cell");
+			currentRowElement.appendChild(currentCellElement);
 		}
 
 		// Split board in half
 		if (row <= BOARD_ROWS / 2)
-			$("#board-upper").append(currentRowElement);
+			document.getElementById("board-upper").append(currentRowElement);
 		else
-			$("#board-lower").append(currentRowElement);
+			document.getElementById("board-lower").append(currentRowElement);
 	}
 
-	$(".board").addClass("ui-widget ui-widget-content");
-
-
 	// Hover and clicking on game cells
-	$(".game-cell").hover(
-		function () {
+	document.querySelectorAll('.game-cell').forEach(cell => {
+		cell.addEventListener('mouseenter', function() {
 			if (currentState !== GAME_STATES.READY)
 				return;
-			$(this).addClass("ui-state-hover");
-		},
-		function () {
+			cell.classList.add("ui-state-hover");
+		});
+
+		cell.addEventListener('mouseleave', function() {
 			if (currentState !== GAME_STATES.READY)
 				return;
-			$(this).removeClass("ui-state-hover");
-		}
-	).click(function () {
-		if (currentState !== GAME_STATES.READY)
-			return;
+			cell.classList.remove("ui-state-hover");
+		});
 
-		// Clear previous run to avoid UI bugs
-		clearBoard(false);
+		cell.addEventListener('click', function() {
+			if (currentState !== GAME_STATES.READY)
+				return;
 
-		// Add up to 10 selections
-		if ($('.game-picked').length < MAX_SPOTS || $(this).hasClass('game-picked'))
-			$(this).toggleClass('game-picked');
+			// Clear previous run to avoid UI bugs
+			clearBoard(false);
+
+			// Add up to 10 selections
+			const userCanPickMore = document.querySelectorAll(".game-picked").length < MAX_SPOTS;
+			if (userCanPickMore || cell.classList.contains("game-picked"))
+				cell.classList.toggle("game-picked");
+		});
 	});
+}
 
-});
 
-
-// Clear all special classes on cells
+/**
+ * Clear all special classes on cells.
+ * @param {boolean} clearUserPicks True if should clear the user spots.
+ */
 function clearBoard(clearUserPicks) {
 	if (currentState === GAME_STATES.READY) {
-		$(".game-cell").removeClass("game-drawn game-super");
 
-		if(clearUserPicks)
-			$(".game-cell").removeClass("game-picked");
+		const classesToRemove = ["game-drawn", "game-super"];
+		document.querySelectorAll(".game-cell").forEach(cell => cell.classList.remove(...classesToRemove));
 
-		$("#output").text("");
+		if (clearUserPicks)
+			document.querySelectorAll(".game-cell").forEach(cell => cell.classList.remove("game-picked"));
+
+		document.getElementById("messageDiv").textContent = "";
 
 		return true;
 	}
@@ -130,59 +130,68 @@ function clearBoard(clearUserPicks) {
 	}
 }
 
-
-// Pick a random cell that does not have 'elemClass' set and add it.
+/**
+ * Pick a random unique cell that does not have `elemClass` set and add it.
+ * @param {string} elemClass The CSS class to search for.
+ */
 function pickUnique(elemClass) {
 	const randomNumber = Math.floor(Math.random() * (BOARD_ROWS * BOARD_COLUMNS));
-	const pickedCellElement = $(".game-cell").eq(randomNumber);
+	const pickedCellElement = document.querySelectorAll('.game-cell')[randomNumber];
 
 	// Check for duplicates - call recursively until unique
-	if (pickedCellElement.hasClass(elemClass)) {
+	if (pickedCellElement.classList.contains(elemClass)) {
 		return pickUnique(elemClass);
 	}
 
-	return pickedCellElement.addClass(elemClass);
+	pickedCellElement.classList.add(elemClass);
+
+	return pickedCellElement;
 }
 
-
-// Used to pick each number and then do related actions
+/**
+ * Used to draw each number and then do related actions.
+ * @param {boolean} isSuperball True is this is a superball draw.
+ */
 function gameLoop(isSuperball) {
 	const pickedCellElement = pickUnique("game-drawn")
 
 	if (isSuperball)
-		pickedCellElement.addClass("game-super");
+		pickedCellElement.classList.add("game-super");
 
 	// Skip sound in fast mode
-	if (!$("#chkFastMode").is(':checked')) {
-		if (pickedCellElement.hasClass('game-picked'))
+	if (!document.getElementById("chkFastMode").checked) {
+		if (pickedCellElement.classList.contains("game-picked"))
 			createjs.Sound.play("match");
 		else
 			createjs.Sound.play("nomatch");
 	}
 }
 
-
-// Start a new drawing
+/**
+ * Start a new round.
+ */
 function startGame() {
 	// Verify balance
-	const betAmount = parseFloat($("#txtBet").val());
-	if(currentCredit < betAmount) {
-		$("#output").text("Can't bet more than credit!");
+	const betAmount = parseFloat(document.getElementById("inputBet").value);
+	if (currentCredit < betAmount) {
+		document.getElementById("messageDiv").textContent = "Can't bet more than credit!";
 		return;
 	}
 
 	// Set up game
 	currentState = GAME_STATES.DRAWING;
-	$(".game-drawn").removeClass("game-drawn game-super");
+	const classesToRemove = ["game-drawn", "game-super"];
+	document.querySelectorAll(".game-drawn").forEach(cell => cell.classList.remove(...classesToRemove));
 
 	// Disable user input
-	$(".game-playerinput").attr("disabled", "disabled").addClass("ui-state-disabled");
-	$("#txtBet").spinner({ disabled: true });
-	$("#output").text("");
+	document.querySelectorAll(".game-player-input").forEach(input => input.disabled = true);
+
+	// Reset messageDiv line
+	document.getElementById("messageDiv").textContent = "";
 
 	// Remove bet amount
 	currentCredit -= betAmount;
-	$("#txtCredit").val(currentCredit.toFixed(2));
+	document.getElementById("txtCredit").value = currentCredit.toFixed(2);
 
 	// Draw numbers
 	for (let i = 0; i < NUMBERS_TO_DRAW; i++) {
@@ -196,13 +205,14 @@ function startGame() {
 	setTimeout(endGame, currentSpeed * NUMBERS_TO_DRAW);
 }
 
-
-// Called after all 20 numbers are drawn.
+/**
+ * Called to finish round.
+ */
 function endGame() {
 	// Get results from pay table
-	const pickedCount = $(".game-picked").length;
-	const hitCount = $(".game-picked.game-drawn").length;
-	const hasSuperball = $(".game-picked.game-super").length > 0;
+	const pickedCount = document.querySelectorAll(".game-picked").length;
+	const hitCount = document.querySelectorAll(".game-picked.game-drawn").length;
+	const hasSuperball = document.querySelectorAll(".game-picked.game-super").length > 0;
 	let payoutMultiplier = PAY_TABLE[pickedCount][hitCount];
 
 	if (hasSuperball)
@@ -217,33 +227,28 @@ function endGame() {
 		createjs.Sound.play("lose");
 
 	// Display results of game
-	$("#output").text("You hit " + hitCount + " out of " + pickedCount + " - Payout × " + payoutMultiplier);
+	document.getElementById("messageDiv").textContent = "You hit " + hitCount + " out of " + pickedCount + " - Payout × " + payoutMultiplier;
 
 	if (hasSuperball && payoutMultiplier > 0)
-		$("#output").append(" SUPERBALL!");
+		document.getElementById("messageDiv").textContent += " SUPERBALL!";
 
 	// Log message
-	$("#log").val(function(i, previousValue) {
-		return $("#output").text() + "\n" + previousValue;
-	});
+	document.getElementById("gameLog").value = document.getElementById("messageDiv").textContent + "\n" + document.getElementById("gameLog").value;
 
 	// Add winnings to credit
-	const winnings = parseFloat($("#txtBet").val()) * payoutMultiplier
+	const winnings = parseFloat(document.getElementById("inputBet").value) * payoutMultiplier
 	currentCredit += winnings;
-	$("#txtCredit").val(currentCredit.toFixed(2));
+	document.getElementById("txtCredit").value = currentCredit.toFixed(2);
 
 	// Handle game over
-	if(currentCredit === 0) {
-		$("#log").val(function(i, previousValue) {
-			return  "Game over! Resetting balance...\n" + previousValue;
-		});
+	if (currentCredit === 0) {
+		document.getElementById("gameLog").value = "Game over! Resetting balance...\n" + document.getElementById("gameLog").value;
 		currentCredit = DEFAULT_CREDIT;
-		$("#txtCredit").val(currentCredit.toFixed(2));
+		document.getElementById("txtCredit").value = currentCredit.toFixed(2);
 	}
 
 	// Re-enable user input
-	$(".game-playerinput").removeAttr("disabled").removeClass("ui-state-disabled");
-	$("#txtBet").spinner({ disabled: false });
+	document.querySelectorAll(".game-player-input").forEach(input => input.disabled = false);
 
 	currentState = GAME_STATES.READY;
 }

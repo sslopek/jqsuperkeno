@@ -11,26 +11,33 @@
 
 <body>
 	<br />
-	<table id="board-upper" class="board"></table>
+	<table id="board-upper" class="board ui-widget ui-widget-content"></table>
 	<br />
-	<table id="board-lower" class="board"></table>
-	<div id="output"></div>
-	<button id="btnPlay" autocomplete="off" class="game-playerinput">Play!</button>
-	<button id="btnClear" autocomplete="off" class="game-playerinput">Clear</button>
-	<button id="btnQuick" autocomplete="off" class="game-playerinput">Pick 10</button>
+	<table id="board-lower" class="board ui-widget ui-widget-content"></table>
+	<div id="messageDiv"></div>
+	<button id="btnPlay" autocomplete="off" class="game-player-input">Play!</button>
+	<button id="btnClear" autocomplete="off" class="game-player-input">Clear</button>
+	<button id="btnQuick" autocomplete="off" class="game-player-input">Pick 10</button>
 
-	<br /><input type="checkbox" id="chkFastMode" autocomplete="off" class="game-playerinput">Fast Mode
-	<br />Credit: <input type="text" id="txtCredit" value="20.00" disabled="disabled" autocomplete="off"
-		class="ui-widget ui-widget-content ui-corner-all">
-	<br />Bet: <input type="text" id="txtBet" autocomplete="off" class="game-playerinput">
+	<br /><input type="checkbox" id="chkFastMode" autocomplete="off" class="game-player-input"><label for="chkFastMode">Fast Mode</label>
+	<br />Credit: <input type="text" id="txtCredit" value="20.00" disabled="disabled" autocomplete="off">
+	<br />Bet: <input type="number" id="inputBet" max="100" min="0.25" step="0.25" value="0.25" class="game-player-input"/>
 
 	<br /><br />
-	<textarea id="log" cols="60" rows="8" readonly="true"></textarea>
+	<textarea id="gameLog" cols="60" rows="8" readonly="true"></textarea>
 
-	<script src="https://code.jquery.com/jquery-1.9.1.js"></script>
-	<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 	<script src="https://code.createjs.com/1.0.0/soundjs.min.js"></script>
 	<script src="js/main.js"></script>
+	<script>
+		function ready() {
+			if (document.readyState !== 'loading') {
+				initGame();
+				return;
+			}
+			document.addEventListener('DOMContentLoaded', initGame);
+		}
+		ready();
+	</script>
 </body>
 
 </html>
