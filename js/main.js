@@ -18,13 +18,14 @@ const NUMBERS_TO_DRAW = 20;
 const BONUS_MULTIPLIER = 4;
 const DEFAULT_DRAWING_DELAY_MS = 200;
 const MAX_SPOTS = 10;
+const DEFAULT_CREDIT = 20.0;
 
 const BOARD_ROWS = 8;
 const BOARD_COLUMNS = 10;
 
 let currentState = GAME_STATES.READY;
 let currentSpeed = DEFAULT_DRAWING_DELAY_MS;
-let currentCredit = 20.0;
+let currentCredit = DEFAULT_CREDIT;
 
 $(function () {
 
@@ -163,6 +164,13 @@ function gameLoop(isSuperball) {
 
 // Start a new drawing
 function startGame() {
+	// Verify balance
+	const betAmount = parseFloat($("#txtBet").val());
+	if(currentCredit < betAmount) {
+		$("#output").text("Can't bet more than credit!");
+		return;
+	}
+
 	// Set up game
 	currentState = GAME_STATES.DRAWING;
 	$(".game-drawn").removeClass("game-drawn game-super");
@@ -173,7 +181,7 @@ function startGame() {
 	$("#output").text("");
 
 	// Remove bet amount
-	currentCredit -= parseFloat($("#txtBet").val());
+	currentCredit -= betAmount;
 	$("#txtCredit").val(currentCredit.toFixed(2));
 
 	// Draw numbers
@@ -223,6 +231,15 @@ function endGame() {
 	const winnings = parseFloat($("#txtBet").val()) * payoutMultiplier
 	currentCredit += winnings;
 	$("#txtCredit").val(currentCredit.toFixed(2));
+
+	// Handle game over
+	if(currentCredit === 0) {
+		$("#log").val(function(i, previousValue) {
+			return  "Game over! Resetting balance...\n" + previousValue;
+		});
+		currentCredit = DEFAULT_CREDIT;
+		$("#txtCredit").val(currentCredit.toFixed(2));
+	}
 
 	// Re-enable user input
 	$(".game-playerinput").removeAttr("disabled").removeClass("ui-state-disabled");
