@@ -43,6 +43,8 @@ $(function () {
 		step: .25,
 	}).val(".25");
 
+	$("#log").val("");
+
 	$("#chkFastMode").click(function () {
 		if ($("#chkFastMode").is(':checked'))
 			currentSpeed = DEFAULT_DRAWING_DELAY_MS / 10;
@@ -204,7 +206,9 @@ function endGame() {
 		$("#output").append(" SUPERBALL!");
 
 	// Log message
-	$("#log").prepend($("#output").text() + "\n");
+	$("#log").val(function(i, previousValue) {
+		return $("#output").text() + "\n" + previousValue;
+	});
 
 	// Add winnings to credit
 	const winnings = parseFloat($("#txtBet").val()) * payoutMultiplier
