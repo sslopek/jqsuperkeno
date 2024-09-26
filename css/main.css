@@ -2,6 +2,11 @@ body {
 	text-align: center;
 }
 
+textarea {
+	box-sizing: border-box;
+	max-width: 100%;
+}
+
 .ui-widget {
 	font-size: 12px;
 }
