@@ -1,0 +1,46 @@
+body {
+	text-align: center;
+}
+
+.ui-widget {
+	font-size: 12px;
+}
+
+.board {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.board td {
+	background-color: #333333;
+	color: #A0A0A0;
+	border: 1px solid #333333;
+	width: 25px;
+	height: 25px;
+	font-size: 16px;
+	text-align: center;
+	cursor: pointer;
+	border: 2px solid black;
+}
+
+.board .game-picked {
+	border: 2px solid yellow;
+
+}
+
+.board .game-drawn {
+	background-color: #0B58A2;
+}
+
+.board .game-super {
+	background-color: green !important;
+}
+
+.board .game-picked.game-drawn {
+	font-weight: bold;
+	color: white;
+}
+
+#output {
+	height: 2em;
+}
