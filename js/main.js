@@ -52,10 +52,10 @@ $(function () {
 			currentSpeed = DEFAULT_DRAWING_DELAY_MS;
 	});
 
-	$("#btnClear").button().click(clearBoard);
+	$("#btnClear").button().click(function () {clearBoard(true);});
 
 	$("#btnQuick").button().click(function () {
-		if (clearBoard()) {
+		if (clearBoard(true)) {
 			for (let i = 0; i < MAX_SPOTS; i++) {
 				pickUnique("game-picked");
 			}
@@ -101,6 +101,9 @@ $(function () {
 		if (currentState !== GAME_STATES.READY)
 			return;
 
+		// Clear previous run to avoid UI bugs
+		clearBoard(false);
+
 		// Add up to 10 selections
 		if ($('.game-picked').length < MAX_SPOTS || $(this).hasClass('game-picked'))
 			$(this).toggleClass('game-picked');
@@ -110,9 +113,15 @@ $(function () {
 
 
 // Clear all special classes on cells
-function clearBoard() {
+function clearBoard(clearUserPicks) {
 	if (currentState === GAME_STATES.READY) {
-		$(".game-cell").removeClass("game-drawn game-super game-picked");
+		$(".game-cell").removeClass("game-drawn game-super");
+
+		if(clearUserPicks)
+			$(".game-cell").removeClass("game-picked");
+
+		$("#output").text("");
+
 		return true;
 	}
 	else {
