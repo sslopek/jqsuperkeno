@@ -196,9 +196,9 @@ function startGame() {
 	// Draw numbers
 	for (let i = 0; i < NUMBERS_TO_DRAW; i++) {
 		if (i < NUMBERS_TO_DRAW - 1)
-			setTimeout("gameLoop(false)", currentSpeed * i);
+			setTimeout(() => gameLoop(false), currentSpeed * i);
 		else
-			setTimeout("gameLoop(true)", currentSpeed * i); //Superball on last draw
+			setTimeout(() => gameLoop(true), currentSpeed * i); //Superball on last draw
 	}
 
 	// Finish game after numbers have been picked.
