@@ -83,13 +83,13 @@ function initGame() {
 		cell.addEventListener('mouseenter', function() {
 			if (currentState !== GAME_STATES.READY)
 				return;
-			cell.classList.add("ui-state-hover");
+			cell.classList.add("game-cell-hover");
 		});
 
 		cell.addEventListener('mouseleave', function() {
 			if (currentState !== GAME_STATES.READY)
 				return;
-			cell.classList.remove("ui-state-hover");
+			cell.classList.remove("game-cell-hover");
 		});
 
 		cell.addEventListener('click', function() {
