@@ -40,8 +40,9 @@ function initGame() {
 	createjs.Sound.registerSound("assets/threeTone2.ogg", "superwin", 10);
 
 	// Setup inputs
+	updateCreditDisplay();
 	document.getElementById("inputBet").value = .25;
-	document.getElementById("gameLog").value = "";
+	document.getElementById("game-history").value = "";
 
 	document.getElementById("chkFastMode").addEventListener("click", () => {
 		if (document.getElementById("chkFastMode").checked)
@@ -121,7 +122,7 @@ function clearBoard(clearUserPicks) {
 		if (clearUserPicks)
 			document.querySelectorAll(".game-cell").forEach(cell => cell.classList.remove("game-picked"));
 
-		document.getElementById("messageDiv").textContent = "";
+		document.getElementById("board-message").textContent = "";
 
 		return true;
 	}
@@ -174,7 +175,7 @@ function startGame() {
 	// Verify balance
 	const betAmount = parseFloat(document.getElementById("inputBet").value);
 	if (currentCredit < betAmount) {
-		document.getElementById("messageDiv").textContent = "Can't bet more than credit!";
+		document.getElementById("board-message").textContent = "Can't bet more than credit!";
 		return;
 	}
 
@@ -186,12 +187,12 @@ function startGame() {
 	// Disable user input
 	document.querySelectorAll(".game-player-input").forEach(input => input.disabled = true);
 
-	// Reset messageDiv line
-	document.getElementById("messageDiv").textContent = "";
+	// Reset board-message line
+	document.getElementById("board-message").textContent = "";
 
 	// Remove bet amount
 	currentCredit -= betAmount;
-	document.getElementById("txtCredit").value = currentCredit.toFixed(2);
+	updateCreditDisplay();
 
 	// Draw numbers
 	for (let i = 0; i < NUMBERS_TO_DRAW; i++) {
@@ -227,28 +228,36 @@ function endGame() {
 		createjs.Sound.play("lose");
 
 	// Display results of game
-	document.getElementById("messageDiv").textContent = "You hit " + hitCount + " out of " + pickedCount + " - Payout × " + payoutMultiplier;
+	document.getElementById("board-message").textContent = "You hit " + hitCount + " out of " + pickedCount + " - Payout × " + payoutMultiplier;
 
 	if (hasSuperball && payoutMultiplier > 0)
-		document.getElementById("messageDiv").textContent += " SUPERBALL!";
+		document.getElementById("board-message").textContent += " SUPERBALL!";
 
 	// Log message
-	document.getElementById("gameLog").value = document.getElementById("messageDiv").textContent + "\n" + document.getElementById("gameLog").value;
+	document.getElementById("game-history").value = document.getElementById("board-message").textContent + "\n" + document.getElementById("game-history").value;
 
 	// Add winnings to credit
 	const winnings = parseFloat(document.getElementById("inputBet").value) * payoutMultiplier
 	currentCredit += winnings;
-	document.getElementById("txtCredit").value = currentCredit.toFixed(2);
+	updateCreditDisplay();
 
 	// Handle game over
 	if (currentCredit === 0) {
-		document.getElementById("gameLog").value = "Game over! Resetting balance...\n" + document.getElementById("gameLog").value;
+		document.getElementById("game-history").value = "Game over! Resetting balance...\n" + document.getElementById("game-history").value;
 		currentCredit = DEFAULT_CREDIT;
-		document.getElementById("txtCredit").value = currentCredit.toFixed(2);
+		updateCreditDisplay();
 	}
 
 	// Re-enable user input
 	document.querySelectorAll(".game-player-input").forEach(input => input.disabled = false);
 
 	currentState = GAME_STATES.READY;
+}
+
+
+/**
+ * UI - Show current credit value
+ */
+function updateCreditDisplay() {
+	document.getElementById("credit-value").textContent = currentCredit.toFixed(2);
 }

@@ -1,6 +1,11 @@
+/* -- Standard elements -- */
+
 body {
 	text-align: center;
-	font-family: Arial, sans-serif;
+	font-family: 'Lucida Console', monospace;
+	text-transform: uppercase;
+	background-color: #111;
+	color: #CCC;
 }
 
 textarea {
@@ -8,23 +13,83 @@ textarea {
 	max-width: 100%;
 }
 
+textarea,
+input {
+	font-family: inherit;
+	color: #CCC;
+	background-color: #333333;
+	border: none;
+	padding: 6px;
+	border-radius: 3px;
+}
+
+button,
+.checkbox-label {
+	font-family: inherit;
+	padding: 5px 10px;
+	background-color: #00498f;
+	color: white;
+	border-radius: 0px;
+	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+	border: none;
+	font-size: 12px;
+	text-transform: uppercase;
+	cursor: pointer;
+}
+
+button#btnPlay {
+	background-color: green;
+}
+
+.checkbox-input {
+	/* Style checkbox and label to look like depressed button */
+	display: none;
+}
+
+.checkbox-button {
+	display: inline-block;
+	position: relative;
+	cursor: pointer;
+}
+
+.checkbox-label {
+	display: inline-block;
+}
+
+button:active,
+.checkbox-input:checked+.checkbox-label {
+	background-color: #072b4d;
+	box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.2);
+	transform: translateY(2px);
+}
+
+/* -- Game specific -- */
+
 .board {
 	margin-left: auto;
 	margin-right: auto;
 	padding: 1px;
-	background: #111111;
+	background: #333;
 }
 
 .board td {
 	background-color: #333333;
-	color: #A0A0A0;
+	color: #CCC;
 	border: 1px solid #333333;
 	width: 25px;
 	height: 25px;
 	font-size: 16px;
 	text-align: center;
+	text-shadow: 1.5px 1.5px 0 black;
 	cursor: pointer;
 	border: 2px solid black;
+}
+
+.board td.game-cell-hover {
+	/* Separate class is used instead of :hover to prevent change during draw */
+	color: white;
+	font-weight: bold;
+	background: #00498f;
 }
 
 .board .game-picked {
@@ -45,13 +110,24 @@ textarea {
 	color: white;
 }
 
-#messageDiv {
-	height: 2em;
+#board-message {
+	height: 1em;
+	padding-top: 8px;
+	padding-bottom: 8px;
 }
 
-/* This is used instead of :hover to prevent change during draw */
-td.game-cell-hover {
-	color: white;
-	font-weight: bold;
-	background: #00498f;
+#credit-container {
+	font-size: 24px;
+	color: red;
+	text-shadow:
+		-1px -1px 0 yellow,
+		1px -1px 0 yellow,
+		-1px 1px 0 yellow,
+		1px 1px 0 yellow;
+	letter-spacing: 2px;
+	display: inline-block;
+}
+
+#game-history {
+	font-size: 10px;
 }
