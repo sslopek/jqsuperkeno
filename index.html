@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>jqSuperKeno</title>
 	<meta charset="UTF-8">
@@ -16,7 +17,7 @@
 	<div id="board-message">Select up to 10 numbers</div>
 	<table id="board-lower" class="board"></table>
 
-	<br/>
+	<br />
 	<button id="btnPlay" autocomplete="off" class="game-player-input">Play!</button>
 	<button id="btnClear" autocomplete="off" class="game-player-input">Clear</button>
 	<button id="btnQuick" autocomplete="off" class="game-player-input">Pick 10</button>
@@ -24,10 +25,17 @@
 	<label for="chkFastMode" class="checkbox-label">Fast Mode</label>
 
 	<br /><br />
-	Bet: <input type="number" id="inputBet" max="100" min="0.25" step="0.25" value="0.25" class="game-player-input"/>
+	Bet: <input type="number" id="inputBet" max="100" min="0.25" step="0.25" value="0.25" class="game-player-input" />
 
 	<br /><br />
 	<textarea id="game-history" cols="60" rows="8" readonly="true"></textarea>
+
+	<footer>
+		<p>Created by @sslopek</p>
+		<p>
+			<a href="https://github.com/sslopek/jqsuperkeno" target="_blank">View Source Code on GitHub</a>
+		</p>
+	</footer>
 
 	<script src="https://code.createjs.com/1.0.0/soundjs.min.js"></script>
 	<script src="js/main.js"></script>

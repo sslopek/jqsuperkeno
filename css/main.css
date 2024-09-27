@@ -1,12 +1,34 @@
-/* -- Standard elements -- */
+/* -- Colors -- */
+
+:root {
+	--primary-color: #00498f;
+	--primary-color-lighter: #0B58A2;
+	--primary-color-darker: #072b4d;
+	--success-color: green;
+	--text-color: #CCC;
+	--panel-background: #333;
+}
+
+/* -- Layout -- */
 
 body {
 	text-align: center;
 	font-family: 'Lucida Console', monospace;
 	text-transform: uppercase;
 	background-color: #111;
-	color: #CCC;
+	color: var(--text-color);
 }
+
+footer {
+	color: #555;
+	font-size: 12px;
+}
+
+footer a {
+	color: var(--primary-color-lighter);
+}
+
+/* -- Controls -- */
 
 textarea {
 	box-sizing: border-box;
@@ -16,8 +38,8 @@ textarea {
 textarea,
 input {
 	font-family: inherit;
-	color: #CCC;
-	background-color: #333333;
+	color: var(--text-color);
+	background-color: var(--panel-background);
 	border: none;
 	padding: 6px;
 	border-radius: 3px;
@@ -27,7 +49,7 @@ button,
 .checkbox-label {
 	font-family: inherit;
 	padding: 5px 10px;
-	background-color: #00498f;
+	background-color: var(--primary-color);
 	color: white;
 	border-radius: 0px;
 	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
@@ -38,7 +60,7 @@ button,
 }
 
 button#btnPlay {
-	background-color: green;
+	background-color: var(--success-color);
 }
 
 .checkbox-input {
@@ -58,7 +80,7 @@ button#btnPlay {
 
 button:active,
 .checkbox-input:checked+.checkbox-label {
-	background-color: #072b4d;
+	background-color: var(--primary-color-darker);
 	box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.2);
 	transform: translateY(2px);
 }
@@ -69,13 +91,13 @@ button:active,
 	margin-left: auto;
 	margin-right: auto;
 	padding: 1px;
-	background: #333;
+	background: var(--panel-background);
 }
 
 .board td {
-	background-color: #333333;
-	color: #CCC;
-	border: 1px solid #333333;
+	background-color: var(--panel-background);
+	color: var(--text-color);
+	border: 1px solid var(--panel-background);
 	width: 25px;
 	height: 25px;
 	font-size: 16px;
@@ -89,7 +111,7 @@ button:active,
 	/* Separate class is used instead of :hover to prevent change during draw */
 	color: white;
 	font-weight: bold;
-	background: #00498f;
+	background: var(--primary-color);
 }
 
 .board .game-picked {
@@ -98,11 +120,11 @@ button:active,
 }
 
 .board .game-drawn {
-	background-color: #0B58A2;
+	background-color: var(--primary-color-lighter);
 }
 
 .board .game-super {
-	background-color: green !important;
+	background-color: var(--success-color) !important;
 }
 
 .board .game-picked.game-drawn {
