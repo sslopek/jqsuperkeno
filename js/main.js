@@ -27,17 +27,25 @@ let currentState = GAME_STATES.READY;
 let currentSpeed = DEFAULT_DRAWING_DELAY_MS;
 let currentCredit = DEFAULT_CREDIT;
 
+const SOUND_EFFECTS = {
+	NOMATCH: "nomatch",
+	MATCH: "match",
+	LOSE: "lose",
+	WIN: "win",
+	SUPERWIN: "superwin"
+};
+
 /**
  * Setup game on page ready.
  */
 function initGame() {
 	// Setup audio
 	createjs.Sound.initializeDefaultPlugins();
-	createjs.Sound.registerSound("assets/tone1.ogg", "nomatch", 10);
-	createjs.Sound.registerSound("assets/zap1.ogg", "match", 10);
-	createjs.Sound.registerSound("assets/twoTone1.ogg", "lose", 10);
-	createjs.Sound.registerSound("assets/zapThreeToneUp.ogg", "win", 10);
-	createjs.Sound.registerSound("assets/threeTone2.ogg", "superwin", 10);
+	createjs.Sound.registerSound("assets/tone1.ogg", SOUND_EFFECTS.NOMATCH, 10);
+	createjs.Sound.registerSound("assets/zap1.ogg", SOUND_EFFECTS.MATCH, 10);
+	createjs.Sound.registerSound("assets/twoTone1.ogg", SOUND_EFFECTS.LOSE, 10);
+	createjs.Sound.registerSound("assets/zapThreeToneUp.ogg", SOUND_EFFECTS.WIN, 10);
+	createjs.Sound.registerSound("assets/threeTone2.ogg", SOUND_EFFECTS.SUPERWIN, 10);
 
 	// Setup inputs
 	updateCreditDisplay();
@@ -162,9 +170,9 @@ function gameLoop(isSuperball) {
 	// Skip sound in fast mode
 	if (!document.getElementById("chkFastMode").checked) {
 		if (pickedCellElement.classList.contains("game-picked"))
-			createjs.Sound.play("match");
+			createjs.Sound.play(SOUND_EFFECTS.MATCH);
 		else
-			createjs.Sound.play("nomatch");
+			createjs.Sound.play(SOUND_EFFECTS.NOMATCH);
 	}
 }
 
@@ -221,11 +229,11 @@ function endGame() {
 
 	//Play sound effect
 	if (hasSuperball && payoutMultiplier > 0)
-		createjs.Sound.play("superwin");
+		createjs.Sound.play(SOUND_EFFECTS.SUPERWIN);
 	else if (payoutMultiplier > 0)
-		createjs.Sound.play("win");
+		createjs.Sound.play(SOUND_EFFECTS.WIN);
 	else
-		createjs.Sound.play("lose");
+		createjs.Sound.play(SOUND_EFFECTS.LOSE);
 
 	// Display results of game
 	let superballText = hasSuperball && payoutMultiplier > 0 ? " SUPERBALL! -" : "";
