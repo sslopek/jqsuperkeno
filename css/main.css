@@ -230,7 +230,7 @@ button#btnPlay:disabled {
 }
 
 #board-message {
-	height: 1em;
+	min-height: 1.2em;
 	padding-top: 8px;
 	padding-bottom: 8px;
 }
