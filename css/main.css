@@ -250,3 +250,27 @@ button#btnPlay:disabled {
 #game-history {
 	font-size: 10px;
 }
+
+
+/* -- Animations -- */
+
+/* Highlight winning cells */
+.board .game-picked.game-drawn {
+	animation: rotate 1s linear infinite;
+	border-image: conic-gradient(from var(--angle),
+			var(--color-gray-950),
+			var(--color-highlight-600)) 1 stretch;
+}
+
+/* Allows for animating border-image conic-gradient angle*/
+@property --angle {
+	syntax: "<angle>";
+	initial-value: 0deg;
+	inherits: false;
+}
+
+@keyframes rotate {
+	to {
+		--angle: 360deg;
+	}
+}
