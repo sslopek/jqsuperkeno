@@ -35,6 +35,19 @@ const SOUND_EFFECTS = {
 	SUPERWIN: "superwin"
 };
 
+const GAME_ELEMENTS = {
+	CREDIT_VALUE: document.getElementById("credit-value"),
+	BOARD_UPPER: document.getElementById("board-upper"),
+	BOARD_LOWER: document.getElementById("board-lower"),
+	MESSAGE: document.getElementById("board-message"),
+	HISTORY: document.getElementById("game-history"),
+	BET_INPUT: document.getElementById("inputBet"),
+	PLAY_BUTTON: document.getElementById("btnPlay"),
+	CLEAR_BUTTON: document.getElementById("btnClear"),
+	QUICK_PICK_BUTTON: document.getElementById("btnQuick"),
+	FAST_MODE_CHECKBOX: document.getElementById("chkFastMode"),
+}
+
 /**
  * Setup game on page ready.
  */
@@ -49,22 +62,22 @@ function initGame() {
 
 	// Setup inputs
 	updateCreditDisplay();
-	document.getElementById("inputBet").value = .25;
-	document.getElementById("game-history").value = "";
+	GAME_ELEMENTS.BET_INPUT.value = .25;
+	GAME_ELEMENTS.HISTORY.value = "";
 
-	document.getElementById("chkFastMode").addEventListener("click", () => {
-		if (document.getElementById("chkFastMode").checked) {
+	GAME_ELEMENTS.FAST_MODE_CHECKBOX.addEventListener("click", () => {
+		if (GAME_ELEMENTS.FAST_MODE_CHECKBOX.checked) {
 			currentSpeed = DEFAULT_DRAWING_DELAY_MS / 10;
 		}
 		else {
 			currentSpeed = DEFAULT_DRAWING_DELAY_MS;
 		}
 	});
-	document.getElementById("btnPlay").addEventListener("click", startGame);
-	document.getElementById("btnClear").addEventListener("click", () => {
+	GAME_ELEMENTS.PLAY_BUTTON.addEventListener("click", startGame);
+	GAME_ELEMENTS.CLEAR_BUTTON.addEventListener("click", () => {
 		clearBoard(true);
 	});
-	document.getElementById("btnQuick").addEventListener("click", () => {
+	GAME_ELEMENTS.QUICK_PICK_BUTTON.addEventListener("click", () => {
 		if (clearBoard(true)) {
 			for (let i = 0; i < MAX_SPOTS; i++) {
 				pickUnique("game-picked");
@@ -86,10 +99,10 @@ function initGame() {
 
 		// Split board in half
 		if (row <= BOARD_ROWS / 2) {
-			document.getElementById("board-upper").append(currentRowElement);
+			GAME_ELEMENTS.BOARD_UPPER.append(currentRowElement);
 		}
 		else {
-			document.getElementById("board-lower").append(currentRowElement);
+			GAME_ELEMENTS.BOARD_LOWER.append(currentRowElement);
 		}
 	}
 
@@ -140,7 +153,7 @@ function clearBoard(clearUserPicks) {
 			document.querySelectorAll(".game-cell").forEach(cell => cell.classList.remove("game-picked"));
 		}
 
-		document.getElementById("board-message").textContent = "";
+		GAME_ELEMENTS.MESSAGE.textContent = "";
 
 		return true;
 	}
@@ -179,7 +192,7 @@ function gameLoop(isSuperball) {
 	}
 
 	// Skip sound in fast mode
-	if (!document.getElementById("chkFastMode").checked) {
+	if (!GAME_ELEMENTS.FAST_MODE_CHECKBOX.checked) {
 		if (pickedCellElement.classList.contains("game-picked")) {
 			createjs.Sound.play(SOUND_EFFECTS.MATCH);
 		}
@@ -194,9 +207,9 @@ function gameLoop(isSuperball) {
  */
 function startGame() {
 	// Verify balance
-	const betAmount = parseFloat(document.getElementById("inputBet").value);
+	const betAmount = parseFloat(GAME_ELEMENTS.BET_INPUT.value);
 	if (currentCredit < betAmount) {
-		document.getElementById("board-message").textContent = "Can't bet more than credit!";
+		GAME_ELEMENTS.MESSAGE.textContent = "Can't bet more than credit!";
 		return;
 	}
 
@@ -208,8 +221,8 @@ function startGame() {
 	// Disable user input
 	document.querySelectorAll(".game-player-input").forEach(input => input.disabled = true);
 
-	// Reset board-message line
-	document.getElementById("board-message").textContent = "";
+	// Reset message line
+	GAME_ELEMENTS.MESSAGE.textContent = "";
 
 	// Remove bet amount
 	currentCredit -= betAmount;
@@ -256,19 +269,19 @@ function endGame() {
 
 	// Display results of game
 	let superballText = hasSuperball && payoutMultiplier > 0 ? " SUPERBALL! -" : "";
-	document.getElementById("board-message").textContent = `You hit ${hitCount} out of ${pickedCount} -${superballText} Pays ${payoutMultiplier}×`;
+	GAME_ELEMENTS.MESSAGE.textContent = `You hit ${hitCount} out of ${pickedCount} -${superballText} Pays ${payoutMultiplier}×`;
 
 	// Log message
-	document.getElementById("game-history").value = document.getElementById("board-message").textContent + "\n" + document.getElementById("game-history").value;
+	GAME_ELEMENTS.HISTORY.value = GAME_ELEMENTS.MESSAGE.textContent + "\n" + GAME_ELEMENTS.HISTORY.value;
 
 	// Add winnings to credit
-	const winnings = parseFloat(document.getElementById("inputBet").value) * payoutMultiplier
+	const winnings = parseFloat(GAME_ELEMENTS.BET_INPUT.value) * payoutMultiplier
 	currentCredit += winnings;
 	updateCreditDisplay();
 
 	// Handle game over
 	if (currentCredit === 0) {
-		document.getElementById("game-history").value = "Game over! Resetting balance...\n" + document.getElementById("game-history").value;
+		GAME_ELEMENTS.HISTORY.value = "Game over! Resetting balance...\n" + GAME_ELEMENTS.HISTORY.value;
 		currentCredit = DEFAULT_CREDIT;
 		updateCreditDisplay();
 	}
@@ -283,5 +296,5 @@ function endGame() {
  * UI - Show current credit value
  */
 function updateCreditDisplay() {
-	document.getElementById("credit-value").textContent = currentCredit.toFixed(2);
+	GAME_ELEMENTS.CREDIT_VALUE.textContent = currentCredit.toFixed(2);
 }
