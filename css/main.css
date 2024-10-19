@@ -105,7 +105,13 @@ button,
 	border-bottom-color: var(--color-primary-700);
 }
 
+button:hover,
+.checkbox-label:hover {
+	background-color: var(--color-primary-500);
+}
+
 button:active:not([disabled]),
+.checkbox-input:active+.checkbox-label,
 .checkbox-input:checked+.checkbox-label {
 	transform: translateY(2px);
 	background-color: var(--color-primary-600);
@@ -141,6 +147,10 @@ button#btnPlay {
 	border-bottom-color: var(--color-success-700);
 }
 
+button#btnPlay:hover {
+	background-color: var(--color-success-500);
+}
+
 button#btnPlay:active:not([disabled]) {
 	background-color: var(--color-success-600);
 	border-top-color: var(--color-success-700);
@@ -170,6 +180,7 @@ button#btnPlay:disabled {
 
 .checkbox-label {
 	display: inline-block;
+	user-select: none;
 }
 
 
