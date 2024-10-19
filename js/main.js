@@ -17,6 +17,7 @@ const GAME_STATES = { READY: 1, DRAWING: 2 };
 const NUMBERS_TO_DRAW = 20;
 const BONUS_MULTIPLIER = 4;
 const DEFAULT_DRAWING_DELAY_MS = 200;
+const MIN_SPOTS = 1;
 const MAX_SPOTS = 10;
 const DEFAULT_CREDIT = 20.0;
 
@@ -135,6 +136,9 @@ function initGame() {
 			if (userCanPickMore || cell.classList.contains("game-picked")) {
 				cell.classList.toggle("game-picked");
 			}
+
+			const newCount = document.querySelectorAll(".game-picked").length;
+			GAME_ELEMENTS.MESSAGE.textContent = `Picked ${newCount} (max of ${MAX_SPOTS})`;
 		});
 	});
 }
@@ -206,6 +210,12 @@ function gameLoop(isSuperball) {
  * Start a new round.
  */
 function startGame() {
+	// Minimum spots
+	if (document.querySelectorAll(".game-picked").length < MIN_SPOTS) {
+		GAME_ELEMENTS.MESSAGE.textContent = "Must pick at least " + MIN_SPOTS + "!";
+		return;
+	}
+
 	// Verify balance
 	const betAmount = parseFloat(GAME_ELEMENTS.BET_INPUT.value);
 	if (currentCredit < betAmount) {
