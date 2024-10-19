@@ -228,10 +228,8 @@ function endGame() {
 		createjs.Sound.play("lose");
 
 	// Display results of game
-	document.getElementById("board-message").textContent = "You hit " + hitCount + " out of " + pickedCount + " - Payout × " + payoutMultiplier;
-
-	if (hasSuperball && payoutMultiplier > 0)
-		document.getElementById("board-message").textContent += " SUPERBALL!";
+	let superballText = hasSuperball && payoutMultiplier > 0 ? " SUPERBALL! -" : "";
+	document.getElementById("board-message").textContent = `You hit ${hitCount} out of ${pickedCount} -${superballText} Pays ${payoutMultiplier}×`;
 
 	// Log message
 	document.getElementById("game-history").value = document.getElementById("board-message").textContent + "\n" + document.getElementById("game-history").value;
