@@ -53,13 +53,17 @@ function initGame() {
 	document.getElementById("game-history").value = "";
 
 	document.getElementById("chkFastMode").addEventListener("click", () => {
-		if (document.getElementById("chkFastMode").checked)
+		if (document.getElementById("chkFastMode").checked) {
 			currentSpeed = DEFAULT_DRAWING_DELAY_MS / 10;
-		else
+		}
+		else {
 			currentSpeed = DEFAULT_DRAWING_DELAY_MS;
+		}
 	});
 	document.getElementById("btnPlay").addEventListener("click", startGame);
-	document.getElementById("btnClear").addEventListener("click", () => { clearBoard(true); });
+	document.getElementById("btnClear").addEventListener("click", () => {
+		clearBoard(true);
+	});
 	document.getElementById("btnQuick").addEventListener("click", () => {
 		if (clearBoard(true)) {
 			for (let i = 0; i < MAX_SPOTS; i++) {
@@ -81,41 +85,46 @@ function initGame() {
 		}
 
 		// Split board in half
-		if (row <= BOARD_ROWS / 2)
+		if (row <= BOARD_ROWS / 2) {
 			document.getElementById("board-upper").append(currentRowElement);
-		else
+		}
+		else {
 			document.getElementById("board-lower").append(currentRowElement);
+		}
 	}
 
 	// Hover and clicking on game cells
 	document.querySelectorAll('.game-cell').forEach(cell => {
-		cell.addEventListener('mouseenter', function() {
-			if (currentState !== GAME_STATES.READY)
+		cell.addEventListener('mouseenter', function () {
+			if (currentState !== GAME_STATES.READY) {
 				return;
+			}
 			cell.classList.add("game-cell-hover");
 		});
 
-		cell.addEventListener('mouseleave', function() {
-			if (currentState !== GAME_STATES.READY)
+		cell.addEventListener('mouseleave', function () {
+			if (currentState !== GAME_STATES.READY) {
 				return;
+			}
 			cell.classList.remove("game-cell-hover");
 		});
 
-		cell.addEventListener('click', function() {
-			if (currentState !== GAME_STATES.READY)
+		cell.addEventListener('click', function () {
+			if (currentState !== GAME_STATES.READY) {
 				return;
+			}
 
 			// Clear previous run to avoid UI bugs
 			clearBoard(false);
 
 			// Add up to 10 selections
 			const userCanPickMore = document.querySelectorAll(".game-picked").length < MAX_SPOTS;
-			if (userCanPickMore || cell.classList.contains("game-picked"))
+			if (userCanPickMore || cell.classList.contains("game-picked")) {
 				cell.classList.toggle("game-picked");
+			}
 		});
 	});
 }
-
 
 /**
  * Clear all special classes on cells.
@@ -127,8 +136,9 @@ function clearBoard(clearUserPicks) {
 		const classesToRemove = ["game-drawn", "game-super"];
 		document.querySelectorAll(".game-cell").forEach(cell => cell.classList.remove(...classesToRemove));
 
-		if (clearUserPicks)
+		if (clearUserPicks) {
 			document.querySelectorAll(".game-cell").forEach(cell => cell.classList.remove("game-picked"));
+		}
 
 		document.getElementById("board-message").textContent = "";
 
@@ -164,15 +174,18 @@ function pickUnique(elemClass) {
 function gameLoop(isSuperball) {
 	const pickedCellElement = pickUnique("game-drawn")
 
-	if (isSuperball)
+	if (isSuperball) {
 		pickedCellElement.classList.add("game-super");
+	}
 
 	// Skip sound in fast mode
 	if (!document.getElementById("chkFastMode").checked) {
-		if (pickedCellElement.classList.contains("game-picked"))
+		if (pickedCellElement.classList.contains("game-picked")) {
 			createjs.Sound.play(SOUND_EFFECTS.MATCH);
-		else
+		}
+		else {
 			createjs.Sound.play(SOUND_EFFECTS.NOMATCH);
+		}
 	}
 }
 
@@ -204,10 +217,12 @@ function startGame() {
 
 	// Draw numbers
 	for (let i = 0; i < NUMBERS_TO_DRAW; i++) {
-		if (i < NUMBERS_TO_DRAW - 1)
+		if (i < NUMBERS_TO_DRAW - 1) {
 			setTimeout(() => gameLoop(false), currentSpeed * i);
-		else
+		}
+		else {
 			setTimeout(() => gameLoop(true), currentSpeed * i); //Superball on last draw
+		}
 	}
 
 	// Finish game after numbers have been picked.
@@ -224,16 +239,20 @@ function endGame() {
 	const hasSuperball = document.querySelectorAll(".game-picked.game-super").length > 0;
 	let payoutMultiplier = PAY_TABLE[pickedCount][hitCount];
 
-	if (hasSuperball)
+	if (hasSuperball) {
 		payoutMultiplier = payoutMultiplier * BONUS_MULTIPLIER;
+	}
 
 	//Play sound effect
-	if (hasSuperball && payoutMultiplier > 0)
+	if (hasSuperball && payoutMultiplier > 0) {
 		createjs.Sound.play(SOUND_EFFECTS.SUPERWIN);
-	else if (payoutMultiplier > 0)
+	}
+	else if (payoutMultiplier > 0) {
 		createjs.Sound.play(SOUND_EFFECTS.WIN);
-	else
+	}
+	else {
 		createjs.Sound.play(SOUND_EFFECTS.LOSE);
+	}
 
 	// Display results of game
 	let superballText = hasSuperball && payoutMultiplier > 0 ? " SUPERBALL! -" : "";
@@ -259,7 +278,6 @@ function endGame() {
 
 	currentState = GAME_STATES.READY;
 }
-
 
 /**
  * UI - Show current credit value
