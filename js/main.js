@@ -62,7 +62,7 @@ function initGame() {
 	createjs.Sound.registerSound("assets/threeTone2.ogg", SOUND_EFFECTS.SUPERWIN, 10);
 
 	// Setup inputs
-	updateCreditDisplay();
+	updateCreditDisplay(0, currentCredit);
 	GAME_ELEMENTS.BET_INPUT.value = .25;
 	GAME_ELEMENTS.HISTORY.value = "";
 
@@ -235,8 +235,9 @@ function startGame() {
 	GAME_ELEMENTS.MESSAGE.textContent = "";
 
 	// Remove bet amount
+	const originalAmount = currentCredit;
 	currentCredit -= betAmount;
-	updateCreditDisplay();
+	updateCreditDisplay(originalAmount, currentCredit);
 
 	// Draw numbers
 	for (let i = 0; i < NUMBERS_TO_DRAW; i++) {
@@ -285,16 +286,18 @@ function endGame() {
 	GAME_ELEMENTS.HISTORY.value = GAME_ELEMENTS.MESSAGE.textContent + "\n" + GAME_ELEMENTS.HISTORY.value;
 
 	// Add winnings to credit
+	const originalAmount = currentCredit;
 	const winnings = parseFloat(GAME_ELEMENTS.BET_INPUT.value) * payoutMultiplier
 	currentCredit += winnings;
-	updateCreditDisplay();
 
 	// Handle game over
 	if (currentCredit === 0) {
 		GAME_ELEMENTS.HISTORY.value = "Game over! Resetting balance...\n" + GAME_ELEMENTS.HISTORY.value;
 		currentCredit = DEFAULT_CREDIT;
-		updateCreditDisplay();
 	}
+
+	// Update display
+	updateCreditDisplay(originalAmount, currentCredit);
 
 	// Re-enable user input
 	document.querySelectorAll(".game-player-input").forEach(input => input.disabled = false);
@@ -303,8 +306,39 @@ function endGame() {
 }
 
 /**
- * UI - Show current credit value
+ * Update credit display with counting animation.
+ * @param {number} oldAmount Old credit amount
+ * @param {number} newAmount New credit amount
  */
-function updateCreditDisplay() {
-	GAME_ELEMENTS.CREDIT_VALUE.textContent = currentCredit.toFixed(2);
+function updateCreditDisplay(oldAmount, newAmount) {
+	if (oldAmount === newAmount) {
+		return;
+	}
+
+	const animationDurationMs = 500;
+	let startTime = null;
+	const animate = (timestamp) => {
+		if (!startTime) {
+			startTime = timestamp;
+		}
+		const timeElapsed = timestamp - startTime;
+		const animationCompletePercent = Math.min(timeElapsed / animationDurationMs, 1);
+
+		// Current credits to display in animation
+		const currentNumber = animationCompletePercent * (newAmount - oldAmount) + oldAmount;
+		GAME_ELEMENTS.CREDIT_VALUE.textContent = currentNumber.toFixed(2);
+
+		if (animationCompletePercent < 1) {
+			// Don't add extra effects for subtracting bet amount
+			if (oldAmount < newAmount) {
+				GAME_ELEMENTS.CREDIT_VALUE.classList.add('count-animation');
+			}
+			// Continue animation
+			requestAnimationFrame(animate);
+		} else {
+			GAME_ELEMENTS.CREDIT_VALUE.classList.remove('count-animation')
+		}
+	};
+
+	requestAnimationFrame(animate);
 }

@@ -254,6 +254,15 @@ button#btnPlay:disabled {
 	display: inline-block;
 }
 
+#credit-value {
+	display: inline-block;
+	transition: transform 0.1s ease;
+}
+
+#credit-value.count-animation {
+	transform: scale(1.2);
+}
+
 #game-history {
 	font-size: 12px;
 }
