@@ -10,6 +10,8 @@ Sound effects by Kenney www.kenney.nl (licensed CC0)
 
 Pay table based on http://wizardofodds.com/games/keno/
 
+Font from https://github.com/TakWolf/retro-pixel-font
+
 ## License
 
 This software is released under the included MIT license.
