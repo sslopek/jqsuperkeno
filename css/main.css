@@ -1,0 +1,292 @@
+/* -- Colors -- */
+
+:root {
+	/* Generated with https://github.com/SimeonGriggs/tints.dev */
+	--color-primary-50: #e5f3ff;
+	--color-primary-100: #cce6ff;
+	--color-primary-200: #94cbff;
+	--color-primary-300: #61b3ff;
+	--color-primary-400: #2e9aff;
+	--color-primary-500: #0081fa;
+	--color-primary-600: #0064c2;
+	--color-primary-700: #00498f;
+	--color-primary-800: #003261;
+	--color-primary-900: #00182e;
+	--color-primary-950: #000d19;
+
+	--color-success-50: #ebfaee;
+	--color-success-100: #d2f4da;
+	--color-success-200: #aae9b8;
+	--color-success-300: #7dde92;
+	--color-success-400: #51d26d;
+	--color-success-500: #30bb4e;
+	--color-success-600: #25903c;
+	--color-success-700: #1c6e2e;
+	--color-success-800: #13491f;
+	--color-success-900: #09250f;
+	--color-success-950: #041007;
+
+	--color-highlight-50: #fffeeb;
+	--color-highlight-100: #fefdd7;
+	--color-highlight-200: #fefcb3;
+	--color-highlight-300: #fdfa8b;
+	--color-highlight-400: #fdf866;
+	--color-highlight-500: #fcf52c;
+	--color-highlight-600: #e8e003;
+	--color-highlight-700: #b0aa02;
+	--color-highlight-800: #747002;
+	--color-highlight-900: #3c3a01;
+	--color-highlight-950: #1e1d00;
+
+	--color-gray-50: #f2f2f2;
+	--color-gray-100: #e6e6e6;
+	--color-gray-200: #cccccc;
+	--color-gray-300: #b3b3b3;
+	--color-gray-400: #999999;
+	--color-gray-500: #808080;
+	--color-gray-600: #666666;
+	--color-gray-700: #4d4d4d;
+	--color-gray-800: #333333;
+	--color-gray-900: #1a1a1a;
+	--color-gray-950: #0d0d0d;
+}
+
+/* -- Fonts -- */
+
+@font-face {
+	font-family: RetroPixelFontCuteMono;
+	src: url(../fonts/retro-pixel-cute-mono.woff2);
+}
+
+/* -- Layout -- */
+
+body {
+	color: var(--color-gray-100);
+	background-color: var(--color-gray-950);
+	font-family: RetroPixelFontCuteMono, 'Lucida Console', monospace;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+footer {
+	color: var(--color-gray-600);
+	font-size: 12px;
+}
+
+footer a {
+	color: var(--color-primary-600);
+}
+
+/* -- Controls -- */
+
+textarea {
+	box-sizing: border-box;
+	max-width: 100%;
+}
+
+textarea,
+input {
+	color: var(--color-gray-100);
+	background-color: var(--color-gray-800);
+	font-family: inherit;
+	padding: 6px;
+	border: none;
+	border-radius: 3px;
+}
+
+button,
+.checkbox-label {
+	color: var(--color-gray-50);
+	background-color: var(--color-primary-600);
+	font-size: 12px;
+	font-family: inherit;
+	text-transform: uppercase;
+	cursor: pointer;
+	padding: 5px 10px;
+	border-radius: 0px;
+	border-width: 4px;
+	border-style: solid;
+	border-top-color: var(--color-primary-500);
+	border-left-color: var(--color-primary-500);
+	border-right-color: var(--color-primary-700);
+	border-bottom-color: var(--color-primary-700);
+}
+
+button:hover,
+.checkbox-label:hover {
+	background-color: var(--color-primary-500);
+}
+
+button:active:not([disabled]),
+.checkbox-input:active+.checkbox-label,
+.checkbox-input:checked+.checkbox-label {
+	transform: translateY(2px);
+	background-color: var(--color-primary-600);
+	border-top-color: var(--color-primary-700);
+	border-left-color: var(--color-primary-700);
+	border-right-color: var(--color-primary-500);
+	border-bottom-color: var(--color-primary-500);
+
+}
+
+button:disabled,
+.checkbox-input:disabled+.checkbox-label {
+	color: var(--color-gray-200);
+	background-color: var(--color-primary-700);
+	border-top-color: var(--color-primary-600);
+	border-left-color: var(--color-primary-600);
+	border-right-color: var(--color-primary-800);
+	border-bottom-color: var(--color-primary-800);
+}
+
+.checkbox-input:checked:disabled+.checkbox-label {
+	border-top-color: var(--color-primary-800);
+	border-left-color: var(--color-primary-800);
+	border-right-color: var(--color-primary-600);
+	border-bottom-color: var(--color-primary-600);
+}
+
+button#btnPlay {
+	background-color: var(--color-success-600);
+	border-top-color: var(--color-success-500);
+	border-left-color: var(--color-success-500);
+	border-right-color: var(--color-success-700);
+	border-bottom-color: var(--color-success-700);
+}
+
+button#btnPlay:hover {
+	background-color: var(--color-success-500);
+}
+
+button#btnPlay:active:not([disabled]) {
+	background-color: var(--color-success-600);
+	border-top-color: var(--color-success-700);
+	border-left-color: var(--color-success-700);
+	border-right-color: var(--color-success-500);
+	border-bottom-color: var(--color-success-500);
+}
+
+button#btnPlay:disabled {
+	background-color: var(--color-success-700);
+	border-top-color: var(--color-success-600);
+	border-left-color: var(--color-success-600);
+	border-right-color: var(--color-success-800);
+	border-bottom-color: var(--color-success-800);
+}
+
+.checkbox-input {
+	/* Style checkbox and label to look like depressed button */
+	display: none;
+}
+
+.checkbox-button {
+	display: inline-block;
+	position: relative;
+	cursor: pointer;
+}
+
+.checkbox-label {
+	display: inline-block;
+	user-select: none;
+}
+
+
+/* -- Game specific -- */
+
+.board {
+	background: var(--color-gray-800);
+	margin-left: auto;
+	margin-right: auto;
+	padding: 1px;
+}
+
+.board td {
+	color: var(--color-gray-50);
+	background-color: var(--color-gray-800);
+	border: 2px solid var(--color-gray-950);
+	width: 25px;
+	height: 25px;
+	font-size: 16px;
+	text-align: center;
+	text-shadow: 1.5px 1.5px 0 var(--color-gray-950);
+	cursor: pointer;
+}
+
+.board td.game-cell-hover {
+	/* Separate class is used instead of :hover to prevent change during draw */
+	color: white;
+	background: var(--color-primary-700);
+	font-weight: bold;
+}
+
+.board .game-picked {
+	border: 2px solid var(--color-highlight-500);
+}
+
+.board .game-drawn {
+	background-color: var(--color-primary-600);
+}
+
+.board .game-super {
+	background-color: var(--color-success-600) !important;
+}
+
+.board .game-picked.game-drawn {
+	font-weight: bold;
+	color: white;
+}
+
+#board-message {
+	min-height: 1.4em;
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+
+#credit-container {
+	font-size: 24px;
+	color: red;
+	text-shadow:
+		-1px -1px 0 var(--color-highlight-500),
+		1px -1px 0 var(--color-highlight-500),
+		-1px 1px 0 var(--color-highlight-500),
+		1px 1px 0 var(--color-highlight-500);
+	letter-spacing: 2px;
+	display: inline-block;
+}
+
+#credit-value {
+	display: inline-block;
+	transition: transform 0.1s ease;
+}
+
+#credit-value.count-animation {
+	transform: scale(1.2);
+}
+
+#game-history {
+	font-size: 12px;
+}
+
+
+/* -- Animations -- */
+
+/* Highlight winning cells */
+.board .game-picked.game-drawn {
+	animation: rotate 1s linear infinite;
+	border-image: conic-gradient(from var(--angle),
+			var(--color-gray-950),
+			var(--color-highlight-600)) 1 stretch;
+}
+
+/* Allows for animating border-image conic-gradient angle*/
+@property --angle {
+	syntax: "<angle>";
+	initial-value: 0deg;
+	inherits: false;
+}
+
+@keyframes rotate {
+	to {
+		--angle: 360deg;
+	}
+}
